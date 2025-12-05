@@ -1,3 +1,5 @@
+# 개발 환경에서 사용할 파일
+
 spring:
   application:
     name: backend
