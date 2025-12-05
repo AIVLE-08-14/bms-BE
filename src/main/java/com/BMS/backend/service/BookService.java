@@ -24,4 +24,6 @@ public interface BookService {
 
     // 책 삭제 (권한 체크)
     void deleteBook(Long id, Long userId);
+
+    Book updateBookCover(Long id, String coverImageUrl, Long userId);
 }

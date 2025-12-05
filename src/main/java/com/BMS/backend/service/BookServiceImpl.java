@@ -84,4 +84,22 @@ public class BookServiceImpl implements BookService {
 
         bookRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional
+    public Book updateBookCover(Long id, String coverImageUrl, Long userId) {
+        // 1. 책 찾기
+        Book existingBook = bookRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
+
+        // 2. 권한 체크
+        if (!existingBook.getUser().getId().equals(userId)) {
+            throw new ForbiddenException("You don't have permission to update this book cover");
+        }
+
+        // 3. 표지 이미지 업데이트
+        existingBook.setCoverImageUrl(coverImageUrl);
+
+        return bookRepository.save(existingBook);
+    }
 }
