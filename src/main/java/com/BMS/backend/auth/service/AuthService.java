@@ -6,8 +6,10 @@ import com.BMS.backend.auth.dto.RegisterRequest;
 import com.BMS.backend.auth.dto.TokenResponse;
 import com.BMS.backend.auth.model.User;
 import com.BMS.backend.auth.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -31,7 +33,9 @@ public class AuthService {
     // Register - Sign up
     public void register(RegisterRequest request){
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("이미 존재하는 아이디입니다.");
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "이미 존재하는 아이디입니다.");
         }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
@@ -44,15 +48,22 @@ public class AuthService {
     }
 
     // Login
-    public TokenResponse login(LoginRequest request){
+    public TokenResponse login(LoginRequest request) {
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 
-        if (userOptional.isEmpty()){
-            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        if (userOptional.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "이메일 또는 비밀번호가 올바르지 않습니다."
+            );
         }
+
         User user = userOptional.get();
-        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "이메일 또는 비밀번호가 올바르지 않습니다."
+            );
         }
         String token = jwtTokenProvider.generateToken(user.getEmail());
         return new TokenResponse(token);
