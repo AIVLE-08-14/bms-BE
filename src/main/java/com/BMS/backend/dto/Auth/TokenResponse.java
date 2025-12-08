@@ -1,4 +1,4 @@
-package com.BMS.backend.dto;
+package com.BMS.backend.dto.Auth;
 
 import lombok.Getter;
 

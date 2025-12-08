@@ -1,12 +1,12 @@
 package com.BMS.backend.service;
 
 import com.BMS.backend.domain.User;
+import com.BMS.backend.exception.CustomException;
 import com.BMS.backend.repository.UserRepository;
 import com.BMS.backend.domain.Book;
-import com.BMS.backend.exception.ForbiddenException;
-import com.BMS.backend.exception.ResourceNotFoundException;
 import com.BMS.backend.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +41,7 @@ public class BookServiceImpl implements BookService {
     public Book createBook(Book book, Long userId) {
         // User 존재 확인
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> new CustomException("User not found with id: " + userId, HttpStatus.NOT_FOUND));
 
         // Book에 User 설정
         book.setUser(user);
@@ -53,11 +53,11 @@ public class BookServiceImpl implements BookService {
     public Book updateBook(Long id, Book book, Long userId) {
         // 책이 존재하는지 확인
         Book existingBook = bookRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
+                .orElseThrow(() -> new CustomException("Book not found with id: " + id,  HttpStatus.NOT_FOUND));
 
         // 권한 체크: 본인의 책인지 확인
         if (!existingBook.getUser().getId().equals(userId)) {
-            throw new ForbiddenException("You don't have permission to update this book");
+            throw new CustomException("You don't have permission to update this book", HttpStatus.FORBIDDEN);
         }
 
         // 책 정보 업데이트
@@ -75,11 +75,11 @@ public class BookServiceImpl implements BookService {
     public void deleteBook(Long id, Long userId) {
         // 책이 존재하는지 확인
         Book existingBook = bookRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
+                .orElseThrow(() -> new CustomException("Book not found with id: " + id,   HttpStatus.NOT_FOUND));
 
         // 권한 체크: 본인의 책인지 확인
         if (!existingBook.getUser().getId().equals(userId)) {
-            throw new ForbiddenException("You don't have permission to delete this book");
+            throw new CustomException("You don't have permission to delete this book",  HttpStatus.FORBIDDEN);
         }
 
         bookRepository.deleteById(id);
@@ -90,11 +90,11 @@ public class BookServiceImpl implements BookService {
     public Book updateBookCover(Long id, String coverImageUrl, Long userId) {
         // 1. 책 찾기
         Book existingBook = bookRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
+                .orElseThrow(() -> new CustomException("Book not found with id: " + id,   HttpStatus.NOT_FOUND));
 
         // 2. 권한 체크
         if (!existingBook.getUser().getId().equals(userId)) {
-            throw new ForbiddenException("You don't have permission to update this book cover");
+            throw new CustomException("You don't have permission to update this book cover",   HttpStatus.FORBIDDEN);
         }
 
         // 3. 표지 이미지 업데이트

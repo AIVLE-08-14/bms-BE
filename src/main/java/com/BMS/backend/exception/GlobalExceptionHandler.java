@@ -1,7 +1,5 @@
-package com.BMS.backend.global;
+package com.BMS.backend.exception;
 
-import com.BMS.backend.exception.ForbiddenException;
-import com.BMS.backend.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,40 +17,16 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    /**
-     * 403 Forbidden - 권한 없음 예외 처리
-     * BookService에서 본인이 아닌 책을 수정/삭제하려 할 때 발생
-     */
-    @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<Map<String, Object>> handleForbiddenException(ForbiddenException ex) {
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("timestamp", LocalDateTime.now());
-        errorResponse.put("status", HttpStatus.FORBIDDEN.value());
-        errorResponse.put("error", "Forbidden");
-        errorResponse.put("message", ex.getMessage());
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    // Custom Error 처리한 부분 처리기
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ApiResponse<Void>> handleCustomException(CustomException e) {
+        return ResponseEntity
+                .status(e.getHttpStatus())
+                .body(ApiResponse.error(e.getMessage(), e.getHttpStatus().value()));
     }
 
-    /**
-     * 404 Not Found - 리소스 없음 예외 처리
-     * BookService에서 책이나 유저를 찾을 수 없을 때 발생
-     */
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleResourceNotFoundException(ResourceNotFoundException ex) {
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("timestamp", LocalDateTime.now());
-        errorResponse.put("status", HttpStatus.NOT_FOUND.value());
-        errorResponse.put("error", "Not Found");
-        errorResponse.put("message", ex.getMessage());
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-    }
-
-    /**
-     * 400 Bad Request - DTO 검증 실패 예외 처리
-     * @Valid 어노테이션으로 인한 유효성 검증 실패 시 발생
-     */
+    // Valid Error 처리
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException e) {
         Map<String, String> fieldErrors = new HashMap<>();
@@ -71,10 +45,7 @@ public class GlobalExceptionHandler {
                 .body(errorResponse);
     }
 
-    /**
-     * 500 Internal Server Error - 기타 모든 예외 처리
-     * 예상치 못한 서버 오류 발생 시
-     */
+    // 기타 오류 처리
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGlobalException(Exception ex) {
         Map<String, Object> errorResponse = new HashMap<>();

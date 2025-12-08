@@ -1,4 +1,4 @@
-package com.BMS.backend.dto;
+package com.BMS.backend.dto.Book;
 
 import com.BMS.backend.domain.Book;
 import lombok.AllArgsConstructor;

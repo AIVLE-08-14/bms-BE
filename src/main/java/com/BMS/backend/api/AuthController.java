@@ -1,14 +1,12 @@
 package com.BMS.backend.api;
 
-import com.BMS.backend.dto.ApiResponse;
-import com.BMS.backend.dto.LoginRequest;
-import com.BMS.backend.dto.RegisterRequest;
-import com.BMS.backend.dto.TokenResponse;
+import com.BMS.backend.exception.ApiResponse;
+import com.BMS.backend.dto.Auth.LoginRequest;
+import com.BMS.backend.dto.Auth.RegisterRequest;
+import com.BMS.backend.dto.Auth.TokenResponse;
 import com.BMS.backend.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,15 +17,15 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<Void>> register(@Valid @RequestBody RegisterRequest request){
+    public ApiResponse<String> register(@Valid @RequestBody RegisterRequest request){
         authService.register(request);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "회원가입 성공"));
+        return ApiResponse.created("Register Successfully");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<TokenResponse>> login(@Valid @RequestBody LoginRequest request){
+    public ApiResponse<TokenResponse> login(@Valid @RequestBody LoginRequest request){
         TokenResponse tokenResponse = authService.login(request);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "로그인 성공", tokenResponse));
+        return ApiResponse.success(tokenResponse);
     }
 
 }
