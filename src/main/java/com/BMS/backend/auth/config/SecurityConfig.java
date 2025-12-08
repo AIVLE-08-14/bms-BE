@@ -43,6 +43,7 @@ public class SecurityConfig {
                         // 인증 필요 없는 URL
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()   // 🔥 H2 콘솔 허용
+                        .requestMatchers("/health").permitAll()
                         // 나머지는 인증 필요
                         .anyRequest().authenticated()
                 )

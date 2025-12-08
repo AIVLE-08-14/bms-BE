@@ -1,5 +1,7 @@
 package com.BMS.backend.api.controller;
 
+import com.BMS.backend.auth.model.User;
+import com.BMS.backend.auth.repository.UserRepository;
 import com.BMS.backend.domain.Book;
 import com.BMS.backend.dto.BookRequestDTO;
 import com.BMS.backend.dto.BookResponseDTO;
@@ -7,6 +9,7 @@ import com.BMS.backend.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +23,14 @@ import java.util.stream.Collectors;
 public class BookController {
 
     private final BookService bookService;
+    private final UserRepository userRepository;
+
+    private Long getUserIdFromAuth(Authentication authentication) {
+        String email= (String) authentication.getPrincipal();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()->new IllegalArgumentException("User not found"));
+        return user.getId();
+    }
 
     /**
      * 1. 도서 목록 조회
@@ -29,7 +40,8 @@ public class BookController {
      */
     @GetMapping("/books")
     public ResponseEntity<List<BookResponseDTO>> getBooks(
-            @RequestHeader("X-User-Id") Long userId) {
+            Authentication authentication) {
+        Long  userId = getUserIdFromAuth(authentication);
         // 정의서에 '헤더'가 필수라고 되어 있으므로, '내 책 조회' 로직을 여기에 매핑
         List<BookResponseDTO> books = bookService.getMyBooks(userId)
                 .stream()
@@ -42,7 +54,7 @@ public class BookController {
      * 2. 도서 상세 조회
      * API 정의서: GET /api/v1/books/:id
      */
-    @GetMapping("/books/:id")
+    @GetMapping("/books/{id}")
     public ResponseEntity<BookResponseDTO> getBookById(@PathVariable Long id) {
         return bookService.getBookById(id)
                 .map(book -> ResponseEntity.ok(BookResponseDTO.fromEntity(book)))
@@ -54,10 +66,11 @@ public class BookController {
      * API 정의서: POST /api/v1/books/:id
      * 입력: Body(JSON), 헤더(JWT)
      */
-    @PostMapping("/books/:id")
+    @PostMapping("/books")
     public ResponseEntity<BookResponseDTO> createBook(
             @RequestBody BookRequestDTO bookRequestDTO,
-            @RequestHeader("X-User-Id") Long userId) {
+            Authentication authentication) {
+        Long  userId = getUserIdFromAuth(authentication);
         Book book = bookRequestDTO.toEntity();
         Book savedBook = bookService.createBook(book, userId);
 
@@ -70,11 +83,12 @@ public class BookController {
      * 4. 도서 수정
      * API 정의서: PUT /api/v1/books/:id
      */
-    @PutMapping("/books/:id")
+    @PutMapping("/books/{id}")
     public ResponseEntity<BookResponseDTO> updateBook(
             @PathVariable Long id,
             @RequestBody BookRequestDTO bookRequestDTO,
-            @RequestHeader("X-User-Id") Long userId) {
+            Authentication authentication) {
+        Long  userId = getUserIdFromAuth(authentication);
         Book book = bookRequestDTO.toEntity();
         Book updatedBook = bookService.updateBook(id, book, userId);
         return ResponseEntity.ok(BookResponseDTO.fromEntity(updatedBook));
@@ -85,10 +99,11 @@ public class BookController {
      * API 정의서: DELETE /api/v1/books/:id
      * 반환: 204 No Content
      */
-    @DeleteMapping("/books/:id")
+    @DeleteMapping("/books/{id}")
     public ResponseEntity<Void> deleteBook(
             @PathVariable Long id,
-            @RequestHeader("X-User-Id") Long userId) {
+            Authentication authentication) {
+        Long  userId = getUserIdFromAuth(authentication);
         bookService.deleteBook(id, userId);
         return ResponseEntity.noContent().build();
     }
@@ -99,11 +114,12 @@ public class BookController {
      * 입력: { "coverImageUrl": "..." }
      * 주의: 이 기능을 쓰려면 BookRequestDTO와 Entity에 coverImageUrl 필드가 있어야 합니다.
      */
-    @PutMapping("/books/:id/cover")
+    @PutMapping("/books/cover/{id}")
     public ResponseEntity<BookResponseDTO> updateBookCover(
             @PathVariable Long id,
             @RequestBody Map<String, String> coverMap, // { "coverImageUrl": "url..." } 형태 받기 위함
-            @RequestHeader("X-User-Id") Long userId) {
+            Authentication authentication) {
+        Long  userId = getUserIdFromAuth(authentication);
 
         String coverImageUrl = coverMap.get("coverImageUrl");
 
