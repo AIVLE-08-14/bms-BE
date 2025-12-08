@@ -1,3 +1,5 @@
+# 개발 환경에서 사용할 파일
+
 spring:
   application:
     name: backend
@@ -7,7 +9,7 @@ spring:
     url: jdbc:h2:mem:bmsdb
     driver-class-name: org.h2.Driver
     username: sa
-    password:
+    password: 1234
 
   # H2 Console 활성화
   h2:
@@ -29,3 +31,11 @@ spring:
 # 서버 포트 설정
 server:
   port: 8080
+
+app:
+  jwtSecret: test # 나중에 .env로 설정해야 합니다.
+  jwtExpirationInMs: 3600000
+
+# 파일 업로드 경로
+file:
+  upload-dir: uploads/
