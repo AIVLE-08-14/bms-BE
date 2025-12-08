@@ -1,5 +1,6 @@
 package com.BMS.backend.domain;
 
+import com.BMS.backend.auth.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

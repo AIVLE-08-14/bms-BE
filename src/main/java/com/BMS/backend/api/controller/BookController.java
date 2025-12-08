@@ -40,7 +40,7 @@ public class BookController {
 
     /**
      * 2. 도서 상세 조회
-     * API 정의서: GET /api/v1/books/{id}
+     * API 정의서: GET /api/v1/books/:id
      */
     @GetMapping("/books/:id")
     public ResponseEntity<BookResponseDTO> getBookById(@PathVariable Long id) {
@@ -51,7 +51,7 @@ public class BookController {
 
     /**
      * 3. 도서 등록
-     * API 정의서: POST /api/v1/books
+     * API 정의서: POST /api/v1/books/:id
      * 입력: Body(JSON), 헤더(JWT)
      */
     @PostMapping("/books/:id")
@@ -68,7 +68,7 @@ public class BookController {
 
     /**
      * 4. 도서 수정
-     * API 정의서: PUT /api/v1/books/{id}
+     * API 정의서: PUT /api/v1/books/:id
      */
     @PutMapping("/books/:id")
     public ResponseEntity<BookResponseDTO> updateBook(
@@ -82,7 +82,7 @@ public class BookController {
 
     /**
      * 5. 도서 삭제
-     * API 정의서: DELETE /api/v1/books/{id}
+     * API 정의서: DELETE /api/v1/books/:id
      * 반환: 204 No Content
      */
     @DeleteMapping("/books/:id")
@@ -95,7 +95,7 @@ public class BookController {
 
     /**
      * 6. 표지 저장 (추가된 기능)
-     * API 정의서: PUT /api/v1/books/{id}/cover
+     * API 정의서: PUT /api/v1/books/:id/cover
      * 입력: { "coverImageUrl": "..." }
      * 주의: 이 기능을 쓰려면 BookRequestDTO와 Entity에 coverImageUrl 필드가 있어야 합니다.
      */

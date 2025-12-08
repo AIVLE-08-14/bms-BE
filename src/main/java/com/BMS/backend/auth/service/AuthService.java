@@ -9,11 +9,13 @@ import com.BMS.backend.auth.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)  // 클래스 레벨: 읽기 전용 트랜잭션
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -31,6 +33,7 @@ public class AuthService {
     }
 
     // Register - Sign up
+    @Transactional  // 쓰기 작업: DB에 사용자 저장
     public void register(RegisterRequest request){
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new ResponseStatusException(
