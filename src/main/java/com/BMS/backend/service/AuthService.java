@@ -1,11 +1,11 @@
-package com.BMS.backend.auth.service;
+package com.BMS.backend.service;
 
-import com.BMS.backend.auth.config.JwtTokenProvider;
-import com.BMS.backend.auth.dto.LoginRequest;
-import com.BMS.backend.auth.dto.RegisterRequest;
-import com.BMS.backend.auth.dto.TokenResponse;
-import com.BMS.backend.auth.model.User;
-import com.BMS.backend.auth.repository.UserRepository;
+import com.BMS.backend.config.JwtTokenProvider;
+import com.BMS.backend.dto.LoginRequest;
+import com.BMS.backend.dto.RegisterRequest;
+import com.BMS.backend.dto.TokenResponse;
+import com.BMS.backend.domain.User;
+import com.BMS.backend.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

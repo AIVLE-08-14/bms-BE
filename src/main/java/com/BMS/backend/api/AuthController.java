@@ -1,10 +1,10 @@
-package com.BMS.backend.auth.controller;
+package com.BMS.backend.api;
 
-import com.BMS.backend.auth.dto.ApiResponse;
-import com.BMS.backend.auth.dto.LoginRequest;
-import com.BMS.backend.auth.dto.RegisterRequest;
-import com.BMS.backend.auth.dto.TokenResponse;
-import com.BMS.backend.auth.service.AuthService;
+import com.BMS.backend.dto.ApiResponse;
+import com.BMS.backend.dto.LoginRequest;
+import com.BMS.backend.dto.RegisterRequest;
+import com.BMS.backend.dto.TokenResponse;
+import com.BMS.backend.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

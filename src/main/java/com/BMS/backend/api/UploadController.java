@@ -1,4 +1,4 @@
-package com.BMS.backend.api.controller;
+package com.BMS.backend.api;
 
 import com.BMS.backend.global.ApiResponse;
 import com.BMS.backend.service.UploadService;

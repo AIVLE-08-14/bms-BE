@@ -1,7 +1,7 @@
 package com.BMS.backend.service;
 
-import com.BMS.backend.auth.model.User;
-import com.BMS.backend.auth.repository.UserRepository;
+import com.BMS.backend.domain.User;
+import com.BMS.backend.repository.UserRepository;
 import com.BMS.backend.domain.Book;
 import com.BMS.backend.exception.ForbiddenException;
 import com.BMS.backend.exception.ResourceNotFoundException;

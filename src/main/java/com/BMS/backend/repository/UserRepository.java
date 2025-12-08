@@ -1,6 +1,6 @@
-package com.BMS.backend.auth.repository;
+package com.BMS.backend.repository;
 
-import com.BMS.backend.auth.model.User;
+import com.BMS.backend.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

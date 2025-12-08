@@ -1,7 +1,5 @@
-package com.BMS.backend.auth.model;
+package com.BMS.backend.domain;
 
-import com.BMS.backend.domain.Book;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -9,7 +7,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name="users")
