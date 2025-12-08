@@ -1,10 +1,10 @@
-package com.BMS.backend.api.controller;
+package com.BMS.backend.api;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class Health {
+public class HealthController {
     @GetMapping("/health")
     public String health(){
         return "OK";

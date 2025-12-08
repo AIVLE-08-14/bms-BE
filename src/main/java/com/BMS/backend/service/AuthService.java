@@ -1,11 +1,12 @@
-package com.BMS.backend.auth.service;
+package com.BMS.backend.service;
 
-import com.BMS.backend.auth.config.JwtTokenProvider;
-import com.BMS.backend.auth.dto.LoginRequest;
-import com.BMS.backend.auth.dto.RegisterRequest;
-import com.BMS.backend.auth.dto.TokenResponse;
-import com.BMS.backend.auth.model.User;
-import com.BMS.backend.auth.repository.UserRepository;
+import com.BMS.backend.config.JwtTokenProvider;
+import com.BMS.backend.dto.Auth.LoginRequest;
+import com.BMS.backend.dto.Auth.RegisterRequest;
+import com.BMS.backend.dto.Auth.TokenResponse;
+import com.BMS.backend.domain.User;
+import com.BMS.backend.exception.CustomException;
+import com.BMS.backend.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-
     public AuthService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
@@ -36,9 +36,8 @@ public class AuthService {
     @Transactional  // 쓰기 작업: DB에 사용자 저장
     public void register(RegisterRequest request){
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "이미 존재하는 이메일입니다.");
+            throw new CustomException("이미 존재하는 이메일입니다.",
+                    HttpStatus.CONFLICT);
         }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
@@ -55,17 +54,15 @@ public class AuthService {
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 
         if (userOptional.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED,
-                    "이메일 또는 비밀번호가 올바르지 않습니다."
+            throw new CustomException(
+                    "이메일 또는 비밀번호가 올바르지 않습니다.",HttpStatus.UNAUTHORIZED
             );
         }
 
         User user = userOptional.get();
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED,
-                    "이메일 또는 비밀번호가 올바르지 않습니다."
+            throw new CustomException(
+                    "이메일 또는 비밀번호가 올바르지 않습니다.", HttpStatus.UNAUTHORIZED
             );
         }
         String token = jwtTokenProvider.generateToken(user.getEmail());

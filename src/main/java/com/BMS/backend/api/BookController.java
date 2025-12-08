@@ -1,10 +1,10 @@
-package com.BMS.backend.api.controller;
+package com.BMS.backend.api;
 
-import com.BMS.backend.auth.model.User;
-import com.BMS.backend.auth.repository.UserRepository;
+import com.BMS.backend.domain.User;
+import com.BMS.backend.repository.UserRepository;
 import com.BMS.backend.domain.Book;
-import com.BMS.backend.dto.BookRequestDTO;
-import com.BMS.backend.dto.BookResponseDTO;
+import com.BMS.backend.dto.Book.BookRequestDTO;
+import com.BMS.backend.dto.Book.BookResponseDTO;
 import com.BMS.backend.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
