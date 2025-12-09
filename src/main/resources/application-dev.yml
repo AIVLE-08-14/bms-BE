@@ -20,7 +20,7 @@ spring:
   # JPA 설정
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
@@ -39,3 +39,6 @@ app:
 # 파일 업로드 경로
 file:
   upload-dir: uploads/
+
+openai:
+  api-key: ${OPENAI_API_KEY}
