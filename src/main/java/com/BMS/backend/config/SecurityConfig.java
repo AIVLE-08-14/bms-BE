@@ -1,7 +1,10 @@
 package com.BMS.backend.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
@@ -83,5 +87,17 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    @Value("${openai.api-key}")
+    private String openAiApiKey;
+
+    @Bean
+    public WebClient openAiWebClient() {
+        return WebClient.builder()
+                .baseUrl("https://api.openai.com/v1")
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + openAiApiKey)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                .build();
     }
 }

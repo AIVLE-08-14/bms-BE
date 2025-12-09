@@ -3,6 +3,7 @@ package com.BMS.backend.api;
 import com.BMS.backend.domain.User;
 import com.BMS.backend.dto.Book.BookCoverUpdateRequest;
 import com.BMS.backend.dto.Book.BookUpdateRequest;
+import com.BMS.backend.dto.Cover.CoverGenerateRequest;
 import com.BMS.backend.exception.ApiResponse;
 import com.BMS.backend.exception.CustomException;
 import com.BMS.backend.repository.UserRepository;
@@ -99,5 +100,16 @@ public class BookController {
         Long  userId = getUserIdFromAuth(authentication);
         Book updated = bookService.updateBookCover(id, request, userId);
         return ApiResponse.success(new BookResponse(updated));
+    }
+
+    @PostMapping("/gen/{id}")
+    public ApiResponse<BookResponse> generateBookCover(
+            @PathVariable Long id,
+            @RequestBody CoverGenerateRequest request,
+            Authentication authentication
+    ){
+        Long userId = getUserIdFromAuth(authentication);
+        Book response = bookService.genCover(id, request, userId);
+        return ApiResponse.success(new BookResponse(response));
     }
 }

@@ -4,6 +4,9 @@ import com.BMS.backend.domain.User;
 import com.BMS.backend.dto.Book.BookCoverUpdateRequest;
 import com.BMS.backend.dto.Book.BookCreateRequest;
 import com.BMS.backend.dto.Book.BookUpdateRequest;
+import com.BMS.backend.dto.Cover.CoverGenerateRequest;
+import com.BMS.backend.dto.Cover.DalleRequest;
+import com.BMS.backend.dto.Cover.DalleResponse;
 import com.BMS.backend.exception.CustomException;
 import com.BMS.backend.repository.UserRepository;
 import com.BMS.backend.domain.Book;
@@ -12,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +27,7 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
+    private final WebClient openAiWebClient;
 
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
@@ -75,6 +80,27 @@ public class BookService {
     public Book updateBookCover(Long id, BookCoverUpdateRequest request, Long userId) {
         Book book = getVerifiedBook(id, userId);
         book.setCoverImageUrl(request.getBookCoverUrl());
+        return bookRepository.save(book);
+    }
+
+    @Transactional
+    public Book genCover(Long id, CoverGenerateRequest request, Long userId) {
+        Book book = getVerifiedBook(id, userId);
+
+        DalleRequest dalleRequest = new DalleRequest();
+        dalleRequest.setPrompt(request.getPrompt());
+
+        DalleResponse dalleResponse = openAiWebClient.post()
+                .uri("/images/generations")
+                .bodyValue(dalleRequest)
+                .retrieve()
+                .bodyToMono(DalleResponse.class)
+                .block();
+
+        String imageUrl = dalleResponse.getData().get(0).getUrl();
+        book.setCoverImageUrl(imageUrl);
+        System.out.println("### dalleResponse = " + dalleResponse);
+        System.out.println("### url = " + dalleResponse.getData().get(0).getUrl());
         return bookRepository.save(book);
     }
 
