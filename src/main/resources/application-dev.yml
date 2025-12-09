@@ -20,7 +20,7 @@ spring:
   # JPA 설정
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
@@ -40,8 +40,5 @@ app:
 file:
   upload-dir: uploads/
 
-# OpenAI API 설정
 openai:
-  api-key: ${OPENAI_API_KEY:your-api-key-here}  # 환경변수 또는 직접 입력
-  model: dall-e-3
-  image-size: 1024x1024
+  api-key: ${OPENAI_API_KEY}

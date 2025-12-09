@@ -40,7 +40,7 @@ public class Book {
         this.description = description;
     }
 
-    public void updateCover(String bookCoverUrl) {
-        this.bookCoverUrl = bookCoverUrl;
+    public void setCoverImageUrl(String coverImageUrl) {
+        this.bookCoverUrl = coverImageUrl;
     }
 }
