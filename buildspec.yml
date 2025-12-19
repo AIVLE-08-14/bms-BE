@@ -5,21 +5,17 @@ phases:
     runtime-versions:
       java: corretto17
     commands:
+      - chmod +x ./gradlew
       - java -version
       - ./gradlew --version
 
   pre_build:
     commands:
-      - echo "백엔드 Gradle 빌드 시작"
-      - chmod +x gradlew
+      - echo "Gradle 빌드 시작"
 
   build:
     commands:
       - ./gradlew clean build -x test
-
-  post_build:
-    commands:
-      - echo "빌드 완료"
 
 artifacts:
   files:
