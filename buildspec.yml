@@ -1,20 +1,32 @@
 version: 0.2
+
+env:
+  variables:
+    JAVA_HOME: /usr/lib/jvm/java-17-amazon-corretto
+
 phases:
   install:
     runtime-versions:
-      nodejs: 20
+      java: corretto17
     commands:
-      - npm install -g @angular/cli@17
+      - echo "Java version 확인"
+      - java -version
+      - mvn -version
+
   pre_build:
     commands:
-      - npm install
+      - echo "백엔드 빌드 시작"
+      - mvn clean
+
   build:
     commands:
-      - ng build -c production
-      - echo "Build completed."
-    finally:
-      - echo This is the finally block execution!
+      - mvn package -DskipTests
+
+  post_build:
+    commands:
+      - echo "빌드 완료"
+
 artifacts:
-  base-directory: dist/my-angular-project
   files:
-    - '**/*'
+    - target/*.jar
+  discard-paths: yes
