@@ -1,26 +1,21 @@
 version: 0.2
 
-env:
-  variables:
-    JAVA_HOME: /usr/lib/jvm/java-17-amazon-corretto
-
 phases:
   install:
     runtime-versions:
       java: corretto17
     commands:
-      - echo "Java version 확인"
       - java -version
-      - mvn -version
+      - ./gradlew --version
 
   pre_build:
     commands:
-      - echo "백엔드 빌드 시작"
-      - mvn clean
+      - echo "백엔드 Gradle 빌드 시작"
+      - chmod +x gradlew
 
   build:
     commands:
-      - mvn package -DskipTests
+      - ./gradlew clean build -x test
 
   post_build:
     commands:
@@ -28,5 +23,5 @@ phases:
 
 artifacts:
   files:
-    - target/*.jar
+    - build/libs/*.jar
   discard-paths: yes
