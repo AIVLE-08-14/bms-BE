@@ -43,3 +43,8 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// build.gradle 하단에 추가
+tasks.named('bootJar') {
+    archiveFileName = 'backend.jar'
+}
