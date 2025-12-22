@@ -1,20 +1,12 @@
 # [공통 설정]
 spring:
   profiles:
-    active: dev # 기본 실행 프로필 (로컬)
+    active: dev
   application:
     name: backend
+  # 로컬 환경 변수 파일 (선택사항)
   config:
     import: "optional:file:.env[.properties]"
-
-server:
-  port: 8080
-
-app:
-  jwtExpirationInMs: 3600000
-
-file:
-  upload-dir: uploads/
 
 ---
 # [dev 프로필 - 로컬 개발용]
@@ -24,24 +16,9 @@ spring:
       on-profile: dev
   datasource:
     url: jdbc:h2:mem:bmsdb
-    driver-class-name: org.h2.Driver
     username: sa
     password: 1234
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-
-app:
-  jwtSecret: ${JWT_SECRET:test_secret_for_dev}
-
-openai:
-  api:
-    key: ${OPENAI_API_KEY:temp-key}
+  # ... (기타 설정)
 
 ---
 # [prod 프로필 - AWS/운영 배포용]
@@ -49,6 +26,9 @@ spring:
   config:
     activate:
       on-profile: prod
+    # ★ 여기서 prod일 때만 AWS Parameter Store를 연동합니다.
+    import: "aws-parameterstore:/config/backend/"
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -56,7 +36,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: false
 
 app:
   jwtSecret: ${JWT_SECRET}
