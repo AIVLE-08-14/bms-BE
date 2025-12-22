@@ -1,45 +1,65 @@
-# [공통 설정]
+# [1. 공통 설정] - 모든 환경에서 기본으로 읽음
 spring:
   profiles:
     active: dev
   application:
     name: backend
-  # 로컬 환경 변수 파일 (선택사항)
   config:
     import: "optional:file:.env[.properties]"
 
+  # AWS 기본 리전 설정 (로컬에서 SQS 등 AWS 라이브러리 초기화 에러 방지)
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+      credentials:
+        instance-profile: false
+
+# 자바의 @Value 변수들이 로컬에서 에러 나지 않게 기본값 설정
+app:
+  jwtSecret: ${JWT_SECRET:local-secret-key-12345678901234567890}
+  jwtExpirationInMs: ${JWT_EXPIRATION:3600000}
+openai:
+  api:
+    key: ${OPENAI_API_KEY:local-temp-key}
+
 ---
-# [dev 프로필 - 로컬 개발용]
+# [2. dev 프로필] - 로컬 개발용
 spring:
   config:
     activate:
       on-profile: dev
+
+  # 로컬에서는 AWS 자동 설정을 완전히 꺼서 에러 원인을 차단
+  autoconfigure:
+    exclude:
+      - io.awspring.cloud.autoconfigure.sqs.SqsAutoConfiguration
+
   datasource:
     url: jdbc:h2:mem:bmsdb
     username: sa
     password: 1234
-  # ... (기타 설정)
+    driver-class-name: org.h2.Driver
+
+  h2:
+    console:
+      enabled: true
 
 ---
-# [prod 프로필 - AWS/운영 배포용]
+# [3. prod 프로필] - AWS 배포용
 spring:
   config:
     activate:
       on-profile: prod
-    # ★ 여기서 prod일 때만 AWS Parameter Store를 연동합니다.
+    # 배포 환경에서만 AWS Parameter Store 연동
     import: "aws-parameterstore:/config/backend/"
 
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
   jpa:
     hibernate:
       ddl-auto: none
-
-app:
-  jwtSecret: ${JWT_SECRET}
-
-openai:
-  api:
-    key: ${OPENAI_API_KEY}
+    show-sql: false
