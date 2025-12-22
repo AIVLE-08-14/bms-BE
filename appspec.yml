@@ -33,7 +33,7 @@ hooks:
       runas: ec2-user
 
   # 3. (선택/강추) 서버가 진짜 떴는지 확인
-   ValidateService:
-     - location: health_check.sh
-       timeout: 120
-       runas: ec2-user
+  ValidateService:
+   - location: health_check.sh
+     timeout: 120
+     runas: ec2-user
