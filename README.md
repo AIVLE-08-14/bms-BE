@@ -191,11 +191,62 @@ cd bms-BE
 ```
 
 #### 2. 환경 변수 설정
-.env 
+1. 로컬 개발 환경 설정 (dev 프로필)로컬에서 개발 시 프로젝트 루트 디렉토리에 .env 파일을 생성하고 아래 내용을 입력하세요.
+2. (※ .env 파일은 보안을 위해 절대 Git에 커밋하지 마세요.)
+
+**.env**
 ```
-JWT_SECRET = {JWT_SECRET}
-DB_PASSWORD = {DB_PASSWORD}
+JWT_SECRET=your_local_jwt_secret_token
+DB_PASSWORD=password
+OPENAI_API_KEY=sk-your-openai-api-key-here
+DB_URL=jdbc:h2:mem:bmsdb
+DB_USERNAME=sa
 ```
+2. 운영 환경 설정 (prod 프로필)
+AWS CodeBuild, EC2, 또는 ECS 등의 운영 환경에서는 아래의 환경 변수(Environment Variables)를 반드시 등록해야 합니다.
+이 값들이 설정되지 않으면 애플리케이션이 정상적으로 구동되지 않습니다.
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>변수명 (Key)</th>
+      <th>설명</th>
+      <th>권장 값 / 예시</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>SPRING_PROFILES_ACTIVE</b></td>
+      <td>활성화할 스프링 프로필</td>
+      <td><code>prod</code></td>
+    </tr>
+    <tr>
+      <td><b>JWT_SECRET</b></td>
+      <td>운영 전용 JWT 서명 키</td>
+      <td>(32자 이상의 무작위 문자열)</td>
+    </tr>
+    <tr>
+      <td><b>OPENAI_API_KEY</b></td>
+      <td>OpenAI API 키</td>
+      <td><code>sk-prod-xxxx...</code></td>
+    </tr>
+    <tr>
+      <td><b>DB_URL</b></td>
+      <td>운영 DB 주소</td>
+      <td><code>jdbc:mysql://[RDS-엔드포인트]:3306/[DB이름]</code></td>
+    </tr>
+    <tr>
+      <td><b>DB_USERNAME</b></td>
+      <td>운영 DB 계정명</td>
+      <td><code>admin</code></td>
+    </tr>
+    <tr>
+      <td><b>DB_PASSWORD</b></td>
+      <td>운영 DB 비밀번호</td>
+      <td>(강력한 비밀번호)</td>
+    </tr>
+  </tbody>
+</table>
 
 #### 3. 애플리케이션 실행
 ```bash

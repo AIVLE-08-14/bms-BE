@@ -15,10 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
-    private final WebClient openAiWebClient;
+    private final RestTemplate openAiRestTemplate;
 
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
@@ -90,17 +89,21 @@ public class BookService {
         DalleRequest dalleRequest = new DalleRequest();
         dalleRequest.setPrompt(request.getPrompt());
 
-        DalleResponse dalleResponse = openAiWebClient.post()
-                .uri("/images/generations")
-                .bodyValue(dalleRequest)
-                .retrieve()
-                .bodyToMono(DalleResponse.class)
-                .block();
+        String url = "https://api.openai.com/v1/images/generations";
 
-        String imageUrl = dalleResponse.getData().get(0).getUrl();
+        DalleResponse response = openAiRestTemplate.postForObject(
+                url,
+                dalleRequest,
+                DalleResponse.class
+        );
+
+        if (response == null || response.getData() == null || response.getData().isEmpty()) {
+            throw new CustomException("Failed to generate cover image", HttpStatus.BAD_GATEWAY);
+        }
+
+        String imageUrl = response.getData().get(0).getUrl();
         book.setCoverImageUrl(imageUrl);
-        System.out.println("### dalleResponse = " + dalleResponse);
-        System.out.println("### url = " + dalleResponse.getData().get(0).getUrl());
+
         return bookRepository.save(book);
     }
 
