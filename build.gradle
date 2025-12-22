@@ -26,6 +26,8 @@ repositories {
 
 dependencies {
     implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.4.2")
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-parameter-store'
+    implementation 'software.amazon.awssdk:ssm'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
