@@ -41,4 +41,5 @@ file:
   upload-dir: uploads/
 
 openai:
-  api-key: ${OPENAI_API_KEY}
+  api:
+    key: ${OPENAI_API_KEY}
