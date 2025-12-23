@@ -28,3 +28,5 @@ hooks:
 #    - location: health_check.sh
 #      timeout: 120
 #      runas: ec2-user
+
+ignoreApplicationStopFailures: true
