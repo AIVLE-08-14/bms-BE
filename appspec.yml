@@ -19,11 +19,6 @@ permissions:
     mode: 755
 
 hooks:
-  ApplicationStop:
-    - location: stop.sh
-      timeout: 60
-      runas: ec2-user
-
   ApplicationStart:
     - location: start.sh
       timeout: 60
