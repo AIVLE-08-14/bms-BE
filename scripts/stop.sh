@@ -1,11 +1,15 @@
-# stop.sh 예시
 #!/bin/bash
-PID=$(pgrep -f backend.jar)
-if [ -z "$PID" ]; then
-    echo "> 현재 실행 중인 애플리케이션이 없으므로 종료하지 않습니다."
-    exit 0 # 에러 없이 종료
+
+echo "BMS Backend 종료 시작"
+
+PID=$(pgrep -f 'java -jar')
+
+if [ -n "$PID" ]; then
+  echo "기존 프로세스 종료 중 PID=$PID"
+  kill -15 $PID
+  sleep 5
 else
-    echo "> kill -15 $PID"
-    kill -15 $PID
-    sleep 5
+  echo "실행 중인 애플리케이션 없음"
 fi
+
+echo "BMS Backend 종료 완료"
