@@ -22,4 +22,3 @@ artifacts:
     - build/libs/*.jar
     - appspec.yml
     - deploy-scripts/**/*
-  discard-paths: yes
