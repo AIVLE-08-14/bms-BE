@@ -20,6 +20,6 @@ phases:
 artifacts:
   files:
     - build/libs/*.jar
-    - appspec.yml        # 추가
-    - scripts/** # 추가
+    - appspec.yml
+    - scripts/**
   discard-paths: yes
