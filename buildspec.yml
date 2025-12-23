@@ -6,6 +6,7 @@ phases:
       java: corretto21
     commands:
       - chmod +x ./gradlew
+      - chmod +x ./deploy-scripts/**
       - java -version
       - ./gradlew --version
 
