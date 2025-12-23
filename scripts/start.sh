@@ -1,5 +1,5 @@
 #!/bin/bash
-APP_PATH="/home/ec2-user/bms" # 경로가 bms인 것으로 보여 수정했습니다.
+APP_PATH="/home/ec2-user/app"
 JAR_NAME="backend.jar"
 
 echo "> [Start] 신규 애플리케이션 배포 시작"
